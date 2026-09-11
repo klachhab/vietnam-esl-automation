@@ -23,9 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install openpyxl reportlab \
-                      google-api-python-client google-auth google-auth-httplib2 \
-                      httpx beautifulsoup4 playwright
+          pip install -r requirements.txt
           python -m playwright install chromium --with-deps
 
       - name: Run Daily ESL Automation
