@@ -9,6 +9,8 @@ on:
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Check out repository
@@ -36,3 +38,11 @@ jobs:
           PARENT_FOLDER_ID: "13H4RSyyrwza7oml5OYjlCki3QH8oM_25"
         run: |
           python run_cloud_daily.py
+
+      - name: Commit and push updated job history
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add history_jobs.json || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update job history [skip ci]" && git push)
