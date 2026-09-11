@@ -23,7 +23,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install openpyxl reportlab google-api-python-client google-auth \
+          pip install openpyxl reportlab \
+                      google-api-python-client google-auth google-auth-httplib2 \
                       httpx beautifulsoup4 playwright
           python -m playwright install chromium --with-deps
 

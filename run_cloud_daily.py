@@ -16,7 +16,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from zoneinfo import ZoneInfo
 
-from google.oauth2 import service_account
+from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
@@ -54,11 +54,12 @@ PORTFOLIO_LINK = "https://drive.google.com/drive/folders/1_NzhcAhTIkWYhS1dDikIed
 def get_drive_service():
     sa_json = os.getenv("GDRIVE_SERVICE_ACCOUNT_JSON")
     sa_info = json.loads(sa_json)
-    creds = service_account.Credentials.from_service_account_info(
+    creds = Credentials.from_service_account_info(
         sa_info,
-        scopes=["https://www.googleapis.com/auth/drive"]
+        scopes=["https://www.googleapis.com/auth/drive"],
     )
-    return build("drive", "v3", credentials=creds)
+    # cache_discovery=False prevents FileNotFoundError on ephemeral CI runners
+    return build("drive", "v3", credentials=creds, cache_discovery=False)
 
 
 def create_daily_drive_folder(service, folder_name: str, parent_id: str):
