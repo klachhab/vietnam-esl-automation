@@ -16,6 +16,7 @@ venv/
 
 # Secrets / credentials — NEVER commit these
 *.json
+!history_jobs.json
 service_account*.json
 credentials*.json
 oauth_credentials.json
