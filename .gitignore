@@ -18,6 +18,8 @@ venv/
 *.json
 service_account*.json
 credentials*.json
+oauth_credentials.json
+client_secrets.json
 
 # macOS
 .DS_Store

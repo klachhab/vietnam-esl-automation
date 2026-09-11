@@ -16,7 +16,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from zoneinfo import ZoneInfo
 
-from google.oauth2.service_account import Credentials
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
@@ -52,12 +53,18 @@ PORTFOLIO_LINK = "https://drive.google.com/drive/folders/1_NzhcAhTIkWYhS1dDikIed
 # ---------------------------------------------------------------------------
 
 def get_drive_service():
-    sa_json = os.getenv("GDRIVE_SERVICE_ACCOUNT_JSON")
-    sa_info = json.loads(sa_json)
-    creds = Credentials.from_service_account_info(
-        sa_info,
-        scopes=["https://www.googleapis.com/auth/drive"],
+    """Build Drive service using OAuth2 user credentials (refresh token).
+    Uploads run as the real user, so Drive quota is never an issue.
+    """
+    creds = Credentials(
+        token=None,
+        refresh_token=os.environ["GDRIVE_REFRESH_TOKEN"],
+        client_id=os.environ["GDRIVE_CLIENT_ID"],
+        client_secret=os.environ["GDRIVE_CLIENT_SECRET"],
+        token_uri="https://oauth2.googleapis.com/token",
     )
+    # Refresh the access token immediately
+    creds.refresh(Request())
     # cache_discovery=False prevents FileNotFoundError on ephemeral CI runners
     return build("drive", "v3", credentials=creds, cache_discovery=False)
 
