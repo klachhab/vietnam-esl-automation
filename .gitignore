@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# Daily output folders (date-named, auto-generated)
+[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]/
+
+# Secrets / credentials — NEVER commit these
+*.json
+service_account*.json
+credentials*.json
+
+# macOS
+.DS_Store

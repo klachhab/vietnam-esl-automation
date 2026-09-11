@@ -1,0 +1,37 @@
+name: Daily Vietnam ESL Pipeline
+
+on:
+  schedule:
+    # 22:30 UTC = 23:30 Casablanca time (UTC+1)
+    - cron: '30 22 * * *'
+  workflow_dispatch: # Allows manual trigger anytime from GitHub UI
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install openpyxl reportlab google-api-python-client google-auth \
+                      httpx beautifulsoup4 playwright
+          python -m playwright install chromium --with-deps
+
+      - name: Run Daily ESL Automation
+        env:
+          GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+          PARENT_FOLDER_ID: "13H4RSyyrwza7oml5OYjlCki3QH8oM_25"
+        run: |
+          python run_cloud_daily.py
